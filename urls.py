@@ -1,0 +1,9 @@
+# todo_app/urls.py
+
+from django.urls import path
+from .views import TaskListCreate, TaskRetrieveUpdateDestroy
+
+urlpatterns = [
+    path('tasks/', TaskListCreate.as_view(), name='task-list'),
+    path('tasks/<int:pk>/', TaskRetrieveUpdateDestroy.as_view(), name='task-detail'),
+]
