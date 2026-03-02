@@ -13,7 +13,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     search_fields = ['title', 'description']
     ordering_fields = ['created_at', 'due_date', 'title', 'priority']
 
-     def perform_create(self, serializer):
+    def perform_create(self, serializer):
         """Save the owner when a new task is created."""
         serializer.save(owner=self.request.user)
 # View to retrieve, update, or delete a single task
