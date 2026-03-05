@@ -1,6 +1,6 @@
 from rest_framework import generics
 from .models import Task
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer, UserSerializer
 from rest_framework import viewsets
 from rest_framework import permissions
 from .permissions import IsOwnerOrReadOnly
@@ -20,3 +20,33 @@ class TaskViewSet(viewsets.ModelViewSet):
 class TaskRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+
+class TaskListCreate(generics.ListCreateAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    filterset_fields = ['completed', 'priority', 'due_date', 'owner']
+    search_fields = ['title', 'description']
+    ordering_fields = ['created_at', 'due_date', 'title', 'priority']
+
+    def get_queryset(self):
+        """
+        should return a list of all tasks for the currently auth. user
+        """
+        user = self.request.user
+        if user.is_authenticated:
+            return Task.objects.filter(owner=user)
+        return Task.objects.none() #empty queryset for unauthenticated users
+    
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class TaskRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    
