@@ -5,7 +5,6 @@ from rest_framework import viewsets
 from rest_framework import permissions
 from .permissions import IsOwnerOrReadOnly
 
-from Response
 
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
@@ -27,6 +26,9 @@ class TaskViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Save the owner when a new task is created."""
         serializer.save(owner=self.request.user)
+
+
+    
 
 
     
