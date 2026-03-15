@@ -18,3 +18,7 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id', 'title', 'description', 'completed', 'created_at', 'due_date', 'priority', 'owner']
         
+        extra_kwargs = {
+            'priority': {'read_only': True},
+            'created_at': {'read_only': True}
+        }
