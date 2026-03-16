@@ -4,10 +4,16 @@ from rest_framework.decorators import action
 from .models import Task
 from .serializers import TaskSerializer
 from .permissions import IsOwnerOrReadOnly
+from django_filters.rest_framework import DjangoFilterBackend
+
+
 
 class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['priority', 'completed']
 
     def get_queryset(self):
         # Only return tasks belonging to the logged-in user
