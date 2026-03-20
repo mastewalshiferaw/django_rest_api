@@ -9,7 +9,15 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.views import APIView
 
 from django.contrib.auth.models import User
+from django.utils import timezone
 
+@action(detail=True, methods=['post'])
+def mark_completed(self, request, pk=None):
+    task = self.get_object()   
+    task.completed = True
+    task.completed_at = timezone.now() # Record the time
+    task.save()                
+    return Response({'status': 'task marked as complete'})
 
 
 class TaskViewSet(viewsets.ModelViewSet):
