@@ -2,10 +2,14 @@ from rest_framework import generics, viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import Task
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer, UserSerializer
 from .permissions import IsOwnerOrReadOnly
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.views import APIView
+
+from django.contrib.auth.models import User
+
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -34,3 +38,12 @@ class TaskViewSet(viewsets.ModelViewSet):
         task.save()                
         serializer = self.get_serializer(task)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class RegisterView(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = User.objects.create_user(**serializer.validated_data)
+            return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
