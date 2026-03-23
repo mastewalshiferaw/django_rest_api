@@ -27,3 +27,16 @@ class Task(models.Model):
 
     class Meta:
         ordering = ['created_at']
+
+
+
+class Category(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+    
+
+category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+

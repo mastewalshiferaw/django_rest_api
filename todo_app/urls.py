@@ -1,6 +1,6 @@
 from django.urls import path, include # Make sure include is imported
 from rest_framework.routers import DefaultRouter 
-from .views import TaskViewSet 
+from .views import TaskViewSet, RegisterView 
 from django.http import HttpResponse 
 router = DefaultRouter()
 router.register(r'tasks', TaskViewSet, basename='task') # Register our ViewSet
