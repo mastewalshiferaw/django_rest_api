@@ -51,7 +51,12 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
-            user = User.objects.create_user(**serializer.validated_data)
+            user = User.objects.create_user(
+                username = serializer.validated_data['username'],
+                email=serializer.validated_data.get('email', ''),
+                password=serializer.validated_data['password']
+                
+            )
             return Response({"message": "User created successfully"}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
