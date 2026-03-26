@@ -1,3 +1,8 @@
+<h2>My To-Do List</h2>
+<ul id="task-list"></ul>
+
+
+
 <script>
     // 1. Log in to get a token (Replace with your actual superuser creds for testing)
     fetch('http://127.0.0.1:8000/api/token/', {
@@ -7,6 +12,13 @@
     })
     .then(res => res.json())
     .then(data => {
+        const list = document.getElementById('task-list');
+        data.results.forEach(task => {
+            const list = document.createElement('li');
+            li.textContent = task.title +  (task.completed ? "✅" : "");
+            list.appendChild(li);
+            
+        });
         const token = data.access;
         // 2. Now use the token to fetch tasks
         return fetch('http://127.0.0.1:8000/api/tasks/', {
