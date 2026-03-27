@@ -16,9 +16,28 @@
         data.results.forEach(task => {
             const list = document.createElement('li');
             li.textContent = task.title +  (task.completed ? "✅" : "");
-            list.appendChild(li);
+
+            if (!task.completed) {
+    const btn = document.createElement('button');
+    btn.textContent = "Done";
+
+    btn.onclick = () => markTaskDone(task.id); 
+    li.appendChild(btn);
+}
+    list.appendChild(li);
+
+    function markTaskDone(id) {
+    fetch(`http://127.0.0.1:8000/api/tasks/${id}/mark_completed/`, {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'), // Assuming it is stored
+            'Content-Type': 'application/json'
+        }
+    }).then(() => location.reload()); // Refresh page to show status
+}
             
         });
+
         const token = data.access;
         // 2. Now use the token to fetch tasks
         return fetch('http://127.0.0.1:8000/api/tasks/', {
