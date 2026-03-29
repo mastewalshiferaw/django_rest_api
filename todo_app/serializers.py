@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Task
+from .models import Task,  SubTask
 from django.contrib.auth.models import User
 from django.utils import timezone
 
@@ -34,3 +34,16 @@ class TaskSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Due date cannot be in the past!")
         
         return value
+    
+class SubTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubTask
+        fields = ['id', 'title', 'completed']
+
+class TaskSerializer(serializers.ModelSerializer):
+    # This automatically includes subtasks when you GET a task
+    subtasks = SubTaskSerializer(many=True, read_only=True) 
+
+    class Meta:
+        model = Task
+        fields = ['id', 'title', 'subtasks', ...] 
