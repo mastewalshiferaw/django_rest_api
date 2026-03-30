@@ -17,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    subtasks=SubTaskSerializer(many=True,)
     owner = UserSerializer(read_only=True)
     #makes owner field nested and read only
     class Meta:
@@ -39,6 +40,7 @@ class SubTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubTask
         fields = ['id', 'title', 'completed']
+
 
 class TaskSerializer(serializers.ModelSerializer):
     # This automatically includes subtasks when you GET a task
