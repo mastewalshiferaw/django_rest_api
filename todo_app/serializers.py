@@ -44,8 +44,19 @@ class SubTaskSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     # This automatically includes subtasks when you GET a task
-    subtasks = SubTaskSerializer(many=True, read_only=True) 
+    subtasks = SubTaskSerializer(many=True, required=False) 
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'subtasks', ...] 
+        fields = ['id', 'title', 'description', 'completed', 'created_at', 'due_date', 'priority', 'owner', 'subtasks']
+
+        def create(self, validated_data):
+        # Extract subtasks if they exist in the request
+        subtasks_data = validated_data.pop('subtasks', [])
+        # Create the main task
+        task = Task.objects.create(**validated_data)
+        # Create the subtasks linked to this new task
+        for subtask_data in subtasks_data:
+            SubTask.objects.create(task=task, **subtask_data)
+        return task
