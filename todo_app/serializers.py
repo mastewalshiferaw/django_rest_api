@@ -52,11 +52,11 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'completed', 'created_at', 'due_date', 'priority', 'owner', 'subtasks']
 
         def create(self, validated_data):
-        # Extract subtasks if they exist in the request
+        # EVERYTHING below must be indented by 4 spaces
         subtasks_data = validated_data.pop('subtasks', [])
-        # Create the main task
         task = Task.objects.create(**validated_data)
-        # Create the subtasks linked to this new task
+        
         for subtask_data in subtasks_data:
             SubTask.objects.create(task=task, **subtask_data)
+        
         return task

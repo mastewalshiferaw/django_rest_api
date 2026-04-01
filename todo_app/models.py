@@ -1,8 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User # Import Django's built-in User model
+from django.contrib.auth.models import User
 
+class Category(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
 
-
+    def __str__(self):
+        return self.name
 
 class Task(models.Model):
     PRIORITY_CHOICES = [
@@ -11,7 +15,7 @@ class Task(models.Model):
         ('H', 'High'),
     ]
 
-    owner = models.ForeignKey(User, related_name='tasks', on_delete=models.CASCADE, null=True, blank=True) # New field!
+    owner = models.ForeignKey(User, related_name='tasks', on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     completed = models.BooleanField(default=False)
@@ -24,24 +28,14 @@ class Task(models.Model):
         null=True,
         help_text="Task priority (Low, Medium, High)"
     )
+    # The category relationship belongs here, inside the Task class
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.title
 
     class Meta:
         ordering = ['created_at']
-
-
-
-class Category(models.Model):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
-    
-
-category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
 
 class SubTask(models.Model):
     task = models.ForeignKey(Task, related_name='subtasks', on_delete=models.CASCADE)
@@ -50,4 +44,3 @@ class SubTask(models.Model):
 
     def __str__(self):
         return f"{self.title} (for {self.task.title})"
-
